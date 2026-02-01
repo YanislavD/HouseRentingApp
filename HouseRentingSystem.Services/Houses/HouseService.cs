@@ -13,7 +13,7 @@ namespace HouseRentingSystem.Services.Houses
 {
     public class HouseService : IHouseService
     {
-        private readonly HouseRentingDbContext data;
+        
         private readonly IUserService users;
         private readonly IMapper mapper;
 
@@ -29,24 +29,7 @@ namespace HouseRentingSystem.Services.Houses
         public bool Exists(int id)
            => this.data.Houses.Any(h => h.Id == id);
 
-        public HouseDetailsServiceModel HouseDetailsById(int id)
-        {
-            var dbHouse = this.data
-                .Houses
-                .Include(h => h.Category)
-                .Include(h => h.Agent.User)
-                .Where(h => h.Id == id)
-                .FirstOrDefault();
-
-            var house = this.mapper.Map<HouseDetailsServiceModel>(dbHouse);
-
-            var agent = this.mapper.Map<AgentServiceModel>(dbHouse.Agent);
-            agent.FullName = this.users.UserFullName(dbHouse.Agent.UserId);
-
-            house.Agent = agent;
-
-            return house;
-        }
+        
 
 
         public HouseQueryServiceModel All(
